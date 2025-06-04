@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>과일 농장</title>
+    <style>
+        :root {
+            --color-txt-pri: #020616;
+            --color-txt-qua: #67748E;
+            --color-txt-ter: #4D596F;
+            --color-ce600: #09A522;
+            --color-ce100: #AEF69D;
+            --color-ce1000: #00570E;
+            --color-bg-pri: #0114A7;
+            --txt-web: "Pretendard K Edition";
+            --txt-s14: 14px;
+            --txt-s18: 18px;
+            --txt-s28: 28px;
+            --txt-lh20: 20px;
+            --txt-lh24: 24px;
+            --txt-lh36: 36px;
+            --txt-line-height-lh16: 16px;
+            --space-plr10: 10px;
+            --space-plr14: 14px;
+            --space-plr16: 16px;
+            --space-ptb18: 18px;
+            --space-ptb20: 20px;
+            --radius-r10: 10px;
+            --radius-r12: 12px;
+            --color-gradient-start: #27CE2B;
+            --color-gradient-end: #00B182;
+        }
+
+        @font-face {
+            font-family: "Pretendard K Edition";
+            src: url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        body {
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            width: 390px; /* iPhone 13 width */
+            height: 100vh;
+            background: linear-gradient(180deg, #F4FFF2 0%, #DDFFD8 50%, #FFFFFF 100%);
+            position: relative;
+            left: 50%;
+            transform: translateX(-50%);
+            overflow: hidden;
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .back-button {
+            text-decoration: none;
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-button svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .main-content {
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+            height: calc(100vh - 48px - env(safe-area-inset-bottom, 0px)); /* 전체 높이에서 헤더와 safe area 높이 빼기 */
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        @keyframes slideUpFade {
+            0% {
+                opacity: 0;
+                transform: translateY(30%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title-area {
+            opacity: 0;
+            animation: slideUpFade 700ms ease-out forwards;
+        }
+
+        h1 {
+            color: var(--color-txt-pri, #020616);
+            text-align: center;
+            font-variant-numeric: lining-nums tabular-nums;
+            font-family: "Pretendard K Edition";
+            font-size: 24px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: 33px;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            color: var(--color-txt-qua, #67748E);
+            text-align: center;
+            font-variant-numeric: lining-nums tabular-nums;
+            font-family: "Pretendard K Edition";
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 400;
+            line-height: 21px;
+            margin-bottom: 24px;
+        }
+
+        .cherry-image {
+            display: block;
+            margin: 28px auto 16px;
+            width: 160px;
+            height: 160px;
+            object-fit: contain;
+        }
+
+        .fruit-name {
+            color: var(--color-txt-ter, #4D596F);
+            text-align: center;
+            font-variant-numeric: lining-nums tabular-nums;
+            font-family: var(--txt-web, "Pretendard K Edition");
+            font-size: var(--txt-s18, 18px);
+            font-style: normal;
+            font-weight: 700;
+            line-height: var(--txt-lh24, 24px);
+            margin-bottom: 10px;
+        }
+
+        .price-description {
+            color: var(--color-txt-qua, #67748E);
+            text-align: center;
+            font-variant-numeric: lining-nums tabular-nums;
+            font-family: var(--txt-web, "Pretendard K Edition");
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: var(--txt-line-height-lh16, 16px);
+            margin-bottom: 12px;
+        }
+
+        .price {
+            overflow: hidden;
+            color: var(--color-ce600, #09A522);
+            text-align: center;
+            font-variant-numeric: lining-nums tabular-nums;
+            text-overflow: ellipsis;
+            font-family: var(--txt-web, "Pretendard K Edition");
+            font-size: var(--txt-s28, 28px);
+            font-style: normal;
+            font-weight: 700;
+            line-height: var(--txt-lh36, 36px);
+            margin-bottom: 20px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: var(--space-ptb20, 20px) 0;
+        }
+
+        .action-button {
+            display: inline-flex;
+            padding: var(--space-plr10, 10px) var(--space-plr14, 14px);
+            justify-content: center;
+            align-items: center;
+            border-radius: var(--radius-r10, 10px);
+            background: var(--color-ce100, #AEF69D);
+            border: none;
+            cursor: pointer;
+            color: var(--color-ce1000, #00570E);
+            text-align: center;
+            font-variant-numeric: lining-nums tabular-nums;
+            font-family: var(--txt-web, "Pretendard K Edition");
+            font-size: var(--txt-s14, 14px);
+            font-style: normal;
+            font-weight: 700;
+            line-height: var(--txt-lh20, 20px);
+        }
+
+        .slider-section {
+            position: relative;
+            margin: 48px -20px 0;
+            padding: 0 20px;
+        }
+
+        .price-range {
+            display: flex;
+            justify-content: space-between;
+            color: var(--color-txt-qua, #67748E);
+            font-family: var(--txt-web, "Pretendard K Edition");
+            font-size: 16px;
+            font-weight: 500;
+            padding-top: 8px;
+        }
+
+        .slider-track {
+            width: 100%;
+            height: 12px;
+            background: #E8ECF2;
+            border-radius: 6px;
+            position: relative;
+            margin-bottom: 32px;
+            cursor: pointer;
+        }
+
+        .slider-progress {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-gradient-start) 0%, var(--color-gradient-end) 100%);
+            border-radius: 6px;
+            width: 30%;
+            pointer-events: none;
+        }
+
+        .slider-button {
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            background: #FFFFFF;
+            border: 2px solid var(--color-gradient-end);
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slider-button img {
+            width: 25px;
+            height: 15px;
+            object-fit: contain;
+        }
+
+        .slider-button img:first-child {
+            transform: rotate(180deg);
+        }
+
+        .slider-button:active {
+            cursor: grabbing;
+        }
+
+        .fruit-buttons {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+        }
+
+        .fruit-button {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 1.5px solid var(--color-ce100, #AEF69D);
+            background: white;
+            padding: 2px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fruit-button.active {
+            border-color: var(--color-ce600, #09A522);
+            background: var(--color-ce100, #AEF69D);
+        }
+
+        .fruit-button img {
+            width: 20px;
+            height: 20px;
+            object-fit: contain;
+        }
+
+        .cta-button-container {
+            width: 100%;
+            padding: var(--space-ptb18, 18px) var(--space-plr16, 16px);
+            box-sizing: border-box;
+            background: white;
+            padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+        }
+
+        .cta-button {
+            display: flex;
+            padding: var(--space-ptb18, 18px) var(--space-plr16, 16px);
+            justify-content: center;
+            align-items: center;
+            align-self: stretch;
+            border-radius: var(--radius-r12, 12px);
+            background: var(--color-bg-pri, #0114A7);
+            color: white;
+            border: none;
+            font-family: var(--txt-web);
+            font-size: var(--txt-s18);
+            font-weight: 700;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <a class="back-button" onclick="history.back()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 4L7 12L15 20" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </a>
+    </header>
+    <main class="main-content">
+        <div class="title-area">
+            <h1>농장에 심을 과일을 선택해 주세요</h1>
+            <p class="subtitle">이번달 입금 가능액 : 10,000,000원 남았어요</p>
+        </div>
+        <img src="images/cherry_back.png" alt="체리 이미지" class="cherry-image">
+        <p class="fruit-name">체리</p>
+        <p class="price-description">1만원 이상 10만원 미만까지 입금 가능해요</p>
+        <p class="price">10,000원</p>
+        <div class="button-container">
+            <button class="action-button">금액 직접 입력</button>
+        </div>
+        
+        <div class="slider-section">
+            <div class="slider-track">
+                <div class="slider-progress"></div>
+                <div class="slider-button" id="sliderButton">
+                    <img src="images/Group 1261168156.png" alt="슬라이더 화살표">
+                </div>
+            </div>
+            <div class="fruit-buttons">
+                <button class="fruit-button active">
+                    <img src="images/cherry_2d.png" alt="체리">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/banana_2d.png" alt="바나나">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/apple_2d.png" alt="사과">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/blueberry_2d.png" alt="블루베리">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/avocado_2d.png" alt="아보카도">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/peach_2d.png" alt="복숭아">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/mango_2d.png" alt="망고">
+                </button>
+                <button class="fruit-button">
+                    <img src="images/melon_2d.png" alt="멜론">
+                </button>
+            </div>
+            <div class="price-range">
+                <span>1만원</span>
+                <span>1천만원</span>
+            </div>
+        </div>
+    </main>
+    <div class="cta-button-container">
+        <button class="cta-button">확인</button>
+    </div>
+
+    <script>
+        const fruitButtons = document.querySelectorAll('.fruit-button');
+        const sliderTrack = document.querySelector('.slider-track');
+        const sliderProgress = document.querySelector('.slider-progress');
+        const sliderButton = document.getElementById('sliderButton');
+        const fruitImage = document.querySelector('.cherry-image');
+        const fruitName = document.querySelector('.fruit-name');
+        const priceDescription = document.querySelector('.price-description');
+        const price = document.querySelector('.price');
+        let isDragging = false;
+
+        // 과일 정보 객체
+        const fruitInfo = {
+            cherry: {
+                image: 'images/cherry_back.png',
+                name: '체리',
+                priceDesc: '1만원 이상 10만원 미만까지 입금 가능해요',
+                price: '10,000원'
+            },
+            banana: {
+                image: 'images/banana_Back.png',
+                name: '바나나',
+                priceDesc: '10만원 이상 30만원 미만까지 입금 가능해요',
+                price: '100,000원'
+            },
+            apple: {
+                image: 'images/apple_Back.png',
+                name: '사과',
+                priceDesc: '30만원 이상 50만원 미만까지 입금 가능해요',
+                price: '300,000원'
+            },
+            blueberry: {
+                image: 'images/blueberry_back.png',
+                name: '블루베리',
+                priceDesc: '50만원 이상 100만원 미만까지 입금 가능해요',
+                price: '500,000원'
+            },
+            avocado: {
+                image: 'images/avocado_Back.png',
+                name: '아보카도',
+                priceDesc: '100만원 이상 300만원 미만까지 입금 가능해요',
+                price: '1,000,000원'
+            },
+            peach: {
+                image: 'images/peach_back.png',
+                name: '복숭아',
+                priceDesc: '300만원 이상 500만원 미만까지 입금 가능해요',
+                price: '3,000,000원'
+            },
+            mango: {
+                image: 'images/mango_back.png',
+                name: '망고',
+                priceDesc: '500만원 이상 700만원 미만까지 입금 가능해요',
+                price: '5,000,000원'
+            },
+            melon: {
+                image: 'images/melon_back.png',
+                name: '멜론',
+                priceDesc: '700만원 이상 1000만원 이하까지 입금 가능해요',
+                price: '7,000,000원'
+            }
+        };
+
+        // 초기 위치 설정
+        function initializeSliderPosition() {
+            const snapPositions = calculateSnapPositions();
+            const initialPosition = snapPositions[0]; // 첫 번째 과일(체리) 위치
+            sliderProgress.style.width = `${initialPosition}%`;
+            sliderButton.style.left = `${initialPosition}%`;
+        }
+
+        // 페이지 로드 시 초기화
+        window.addEventListener('load', initializeSliderPosition);
+        // 리사이즈 시에도 위치 재조정
+        window.addEventListener('resize', initializeSliderPosition);
+
+        function updateFruitInfo(fruitKey) {
+            const info = fruitInfo[fruitKey];
+            if (info) {
+                fruitImage.src = info.image;
+                fruitName.textContent = info.name;
+                priceDescription.textContent = info.priceDesc;
+                price.textContent = info.price;
+            }
+        }
+
+        // 과일 버튼 개수에 따른 구간 계산
+        const numFruits = fruitButtons.length;
+        const PADDING = 20; // 좌우 패딩값
+
+        // 패딩을 고려한 스냅 위치 계산
+        function calculateSnapPositions() {
+            const trackWidth = sliderTrack.offsetWidth;
+            const effectiveWidth = trackWidth - (PADDING * 2); // 실제 이동 가능한 너비
+            const positions = [];
+            
+            for (let i = 0; i < numFruits; i++) {
+                // 패딩을 고려한 위치 계산
+                const rawPosition = (i / (numFruits - 1)) * effectiveWidth + PADDING;
+                const percentage = (rawPosition / trackWidth) * 100;
+                positions.push(percentage);
+            }
+            
+            return positions;
+        }
+
+        let snapPositions = calculateSnapPositions();
+
+        // 윈도우 리사이즈 시 스냅 위치 재계산
+        window.addEventListener('resize', () => {
+            snapPositions = calculateSnapPositions();
+            // 현재 활성화된 버튼의 위치로 슬라이더 이동
+            const activeIndex = Array.from(fruitButtons).findIndex(btn => btn.classList.contains('active'));
+            if (activeIndex !== -1) {
+                const percentage = snapPositions[activeIndex];
+                sliderProgress.style.width = `${percentage}%`;
+                sliderButton.style.left = `${percentage}%`;
+            }
+        });
+
+        function getClosestSnapPosition(position) {
+            const percentage = position * 100;
+            return snapPositions.reduce((prev, curr) => {
+                return Math.abs(curr - percentage) < Math.abs(prev - percentage) ? curr : prev;
+            });
+        }
+
+        function updateSliderPosition(clientX) {
+            const trackRect = sliderTrack.getBoundingClientRect();
+            const trackWidth = trackRect.width;
+            
+            // 패딩을 고려한 위치 계산
+            let position = (clientX - trackRect.left);
+            position = Math.max(PADDING, Math.min(trackWidth - PADDING, position));
+            position = position / trackWidth;
+
+            // 가장 가까운 스냅 위치 찾기
+            const snapPercentage = getClosestSnapPosition(position);
+            
+            sliderProgress.style.width = `${snapPercentage}%`;
+            sliderButton.style.left = `${snapPercentage}%`;
+
+            // 해당 위치의 과일 버튼 활성화 및 정보 업데이트
+            const activeIndex = snapPositions.indexOf(snapPercentage);
+            fruitButtons.forEach((btn, index) => {
+                btn.classList.toggle('active', index === activeIndex);
+            });
+
+            // 과일 정보 업데이트
+            const fruitKey = activeIndex === 0 ? 'cherry' : 
+                           activeIndex === 1 ? 'banana' : 
+                           activeIndex === 2 ? 'apple' : 
+                           activeIndex === 3 ? 'blueberry' : 
+                           activeIndex === 4 ? 'avocado' : 
+                           activeIndex === 5 ? 'peach' : 
+                           activeIndex === 6 ? 'mango' : 
+                           activeIndex === 7 ? 'melon' : 'cherry';
+            updateFruitInfo(fruitKey);
+        }
+
+        sliderButton.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            document.addEventListener('mousemove', handleDrag);
+            document.addEventListener('mouseup', stopDrag);
+        });
+
+        function handleDrag(e) {
+            if (isDragging) {
+                updateSliderPosition(e.clientX);
+            }
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', handleDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        // 터치 이벤트 처리
+        sliderButton.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            document.addEventListener('touchmove', handleTouchDrag);
+            document.addEventListener('touchend', stopDrag);
+        });
+
+        function handleTouchDrag(e) {
+            if (isDragging) {
+                const touch = e.touches[0];
+                updateSliderPosition(touch.clientX);
+                e.preventDefault();
+            }
+        }
+
+        // 트랙 클릭 시 처리
+        sliderTrack.addEventListener('click', (e) => {
+            updateSliderPosition(e.clientX);
+        });
+
+        // 과일 버튼 클릭 시 슬라이더 이동 및 정보 업데이트
+        fruitButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const percentage = snapPositions[index];
+                sliderProgress.style.width = `${percentage}%`;
+                sliderButton.style.left = `${percentage}%`;
+                
+                // 활성화 상태 업데이트
+                fruitButtons.forEach((btn, i) => {
+                    btn.classList.toggle('active', i === index);
+                });
+
+                // 과일 정보 업데이트
+                const fruitKey = index === 0 ? 'cherry' : 
+                                index === 1 ? 'banana' : 
+                                index === 2 ? 'apple' : 
+                                index === 3 ? 'blueberry' : 
+                                index === 4 ? 'avocado' : 
+                                index === 5 ? 'peach' : 
+                                index === 6 ? 'mango' : 
+                                index === 7 ? 'melon' : 'cherry';
+                updateFruitInfo(fruitKey);
+            });
+        });
+    </script>
+</body>
+</html> 
