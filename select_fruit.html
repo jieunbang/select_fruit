@@ -108,7 +108,7 @@
 
         .title-area {
             opacity: 0;
-            animation: slideUpFade 700ms ease-out forwards;
+            animation: slideUpFade 500ms ease-out forwards;
         }
 
         h1 {
@@ -136,12 +136,28 @@
             margin-bottom: 24px;
         }
 
+        @keyframes bounceFruit {
+            0% {
+                transform: scale(0.97);
+            }
+            50% {
+                transform: scale(1.015);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
         .cherry-image {
             display: block;
             margin: 28px auto 16px;
             width: 160px;
             height: 160px;
             object-fit: contain;
+        }
+
+        .cherry-image.bounce {
+            animation: bounceFruit 250ms cubic-bezier(0.36, 0, 0.66, -0.56) forwards;
         }
 
         .fruit-name {
@@ -472,6 +488,11 @@
         function updateFruitInfo(fruitKey) {
             const info = fruitInfo[fruitKey];
             if (info) {
+                const fruitImage = document.querySelector('.cherry-image');
+                fruitImage.classList.remove('bounce');
+                // 리플로우를 강제로 발생시켜 애니메이션 재시작
+                void fruitImage.offsetWidth;
+                fruitImage.classList.add('bounce');
                 fruitImage.src = info.image;
                 fruitName.textContent = info.name;
                 priceDescription.textContent = info.priceDesc;
